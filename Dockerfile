@@ -1,11 +1,16 @@
-# Use the official Apache Superset image
+
 FROM apache/superset:latest
 
-# Install Postgres client driver
-RUN pip install psycopg2-binary
+USER root
 
-# Copy entrypoint script into the container
+# Install Postgres driver + other common drivers
+RUN pip install --no-cache-dir psycopg2-binary \
+    apache-superset[postgres] \
+    sqlalchemy sqlalchemy-utils
+
+USER superset
+
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Use bash to run the entrypoint (avoids chmod issues on Render)
-CMD ["bash", "/entrypoint.sh"]
+CMD ["/entrypoint.sh"]
