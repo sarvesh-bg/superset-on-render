@@ -4,4 +4,8 @@ USER root
 RUN pip install psycopg2-binary
 USER superset
 
-CMD ["superset", "run", "--host=0.0.0.0", "--port=8088"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD ["/entrypoint.sh"]
+
