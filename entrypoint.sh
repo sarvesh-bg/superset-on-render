@@ -1,21 +1,19 @@
-
 #!/bin/bash
 set -e
 
-# Upgrade database schema
+# Upgrade Superset DB
 superset db upgrade
 
-# Create or update admin user
+# Create admin user if not exists
 superset fab create-admin \
-  --username admin \
-  --firstname Superset \
-  --lastname Admin \
-  --email admin@example.com \
-  --password admin123 \
-  || true
+   --username admin \
+   --firstname Superset \
+   --lastname Admin \
+   --email admin@superset.com \
+   --password admin || true
 
-# Initialize roles and default dashboards
+# Init roles and permissions
 superset init
 
 # Start Superset
-exec superset run --host 0.0.0.0 --port 8088
+superset run -h 0.0.0.0 -p 8080 --with-threads --reload --debugger
