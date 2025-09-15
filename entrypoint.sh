@@ -1,19 +1,24 @@
 #!/bin/bash
 set -e
 
-# Upgrade Superset DB
+# Upgrade the database
 superset db upgrade
 
-# Create admin user if not exists
+# Create admin user (if not exists)
 superset fab create-admin \
    --username admin \
    --firstname Superset \
    --lastname Admin \
    --email admin@superset.com \
-   --password admin || true
+   --password admin123 || true
 
-# Init roles and permissions
+# Initialize roles and permissions
 superset init
 
-# Start Superset
-superset run -h 0.0.0.0 -p 8080 --with-threads --reload --debugger
+# Start Superset with Gunicorn (Render requires binding to $PORT)
+exec gunicorn \
+   -w 4 \
+   -k gevent \
+   --timeout 300 \
+   -b 0.0.0.0:${PORT:-8088} \
+   "superset.app:create_app()"
