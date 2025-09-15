@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: superset
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SUPERSET_SECRET_KEY
+        generateValue: true
+      - key: SUPERSET_ADMIN_PASSWORD
+        value: admin123   # change later
+      - key: DATABASE_URL
+        fromDatabase:
+          name: supersetdb
+          property: connectionString
+    autoDeploy: true
+    healthCheckPath: /
+
+databases:
+  - name: supersetdb
+    plan: free
