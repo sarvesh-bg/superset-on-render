@@ -1,11 +1,11 @@
+# Use the official Apache Superset image
 FROM apache/superset:latest
 
-USER root
+# Install Postgres client driver
 RUN pip install psycopg2-binary
-USER superset
 
+# Copy entrypoint script into the container
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
-CMD ["/entrypoint.sh"]
-
+# Use bash to run the entrypoint (avoids chmod issues on Render)
+CMD ["bash", "/entrypoint.sh"]
